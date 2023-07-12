@@ -1,18 +1,9 @@
-import mongoose, { connect } from 'mongoose'
-import dotenv from 'dotenv';
-dotenv.config({ path: './.env' });
+const mongoose = require('mongoose')
 
-const connectDB = async () => {
-    try {
-    await mongoose.connect(process.env.MONGO_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-    console.log('DataBase Connected');
-} catch (err) {
-    console.error(err.message);
-    process.exit(1);
-}
-};
+const DB_URI = 'mongodb://localhost:27017/urlshortener'
 
-export default connectDB;
+mongoose.connect(DB_URI,{useNewUrlParser:true, useUnifiedTopology:true})
+
+const connection = mongoose.connection
+
+module.exports = connection

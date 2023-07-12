@@ -1,44 +1,53 @@
-import express from 'express';
-import { nanoid } from 'nanoid';
-import UrlModel from '../models/UrlModel';
-import { ValidateUrl } from '../utils/utils.js';
-import dotenv from 'dotenv';
-dotenv.config({ path:'../config/.env' })
+import express from 'express'
+const validUrl = require('valid-url')
+const shortid = require('shortid')
 
 const router = express.Router()
 
+const Url = require('../models/Url')
 
-router.post('/short', async (req, res) => {
-    const { origUrl } = req.body;
-    const base = process.env.BASE;
-  
-    const urlId = nanoid();
-    if (utils.validateUrl(origUrl)) {
-      try {
-        let url = await Url.findOne({ origUrl });
-        if (url) {
-          res.json(url);
-        } else {
-          const shortUrl = `${base}/${urlId}`;
-  
-          url = new Url({
-            origUrl,
-            shortUrl,
-            urlId,
-            date: new Date(),
-          });
-  
-          await url.save();
-          res.json(url);
-        }
-      } catch (err) {
-        console.log(err);
-        res.status(500).json('Server Error');
-      }
-    } else {
-      res.status(400).json('Invalid Original Url');
+// @route    POST /api/url/shorten
+const baseUrl = 'http:localhost:5000'
+
+router.post('/shorten', async (req, res) => {
+    const {
+        longUrl
+    } = req.body 
+    if (!validUrl.isUri(baseUrl)) {
+        return res.status(401).json('Invalid base URL')
     }
-  });
-  
+
+    const urlCode = shortid.generate()
+
+    if (validUrl.isUri(longUrl)) {
+        try {
+
+            let url = await Url.findOne({
+                longUrl
+            })
+
+            if (url) {
+                res.json(url)
+            } else {
+                const shortUrl = baseUrl + '/' + urlCode
+
+                url = new Url({
+                    longUrl,
+                    shortUrl,
+                    urlCode,
+                    date: new Date()
+                })
+                await url.save()
+                res.json(url)
+            }
+        }
+        catch (err) {
+            console.log(err)
+            res.status(500).json('Server Error')
+        }
+    } else {
+        res.status(401).json('Invalid longUrl')
+    }
+})
 
 module.exports = router
