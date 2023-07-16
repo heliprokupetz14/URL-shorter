@@ -1,13 +1,16 @@
-const connection = require('./config/db')
-connection.once('open', () => console.log('DB Connected'))
-connection.on('error', () => console.log('Error'))
+const express = require("express");
+const connectDB = require('./config/db');
 
-app.use(express.json({
-    extended: false
-})) 
-app.use('/', require('./routes/redirect'))
-app.use('/api/url', require('./routes/url'))
+const app = express();
 
+//connect to DB
+connectDB();
+
+app.use(express.json());
+
+// Defult routes
+app.use('/', require('./routes/index'));
+app.use('/api/url' , require('./routes/url'));
 
 const PORT = 3000;
 app.listen(PORT, () => {

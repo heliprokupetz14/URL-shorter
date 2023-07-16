@@ -8,6 +8,6 @@ const URLSchema = new mongoose.Schema({
         type: String,
         default: Date.now
     }
-})
+});
 
-module.exports = mongoose.model('Url', URLSchema)
+module.exports = mongoose.model('Url', URLSchema);

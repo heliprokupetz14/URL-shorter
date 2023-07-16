@@ -1,8 +1,7 @@
-const express = require('express')
+const express = require('express');
+const router = express.Router();
 
-const router = express.Router()
-
-const Url = require('../models/Url')
+const Url = require('../models/UrlModel');
 
 
 // @route       GET /:code
@@ -17,12 +16,10 @@ router.get('/:code', async (req, res) => {
             return res.status(404).json('No URL Found')
         }
 
-    }
-    catch (err) {
+    } catch (err) {
         console.error(err)
         res.status(500).json('Server Error')
     }
-})
-
+});
 
 module.exports = router
